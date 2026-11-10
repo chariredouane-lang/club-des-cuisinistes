@@ -77,4 +77,4 @@ document.getElementById('modelPage').classList.add('open');document.body.style.o
 function closeModal(){document.getElementById('modelPage').classList.remove('open');document.body.style.overflow='';history.replaceState(null,'',location.pathname)}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 function mailForm(form,subject){form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);const body=[...data.entries()].map(([k,v])=>`${k}: ${v}`).join('\n');const mail='contact@cuisinepourtouschambery.fr';window.location.href=`mailto:${mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`})}mailForm(document.getElementById('projectForm'),'Demande de projet — Le Club des Cuisinistes');mailForm(document.getElementById('partnerForm'),'Candidature partenaire — Le Club des Cuisinistes');document.getElementById('year').textContent=new Date().getFullYear();document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.mobile-menu').classList.remove('open')));
-</script></body></html>
+</script><script src="coloris-officiels.js"></script></body></html>
