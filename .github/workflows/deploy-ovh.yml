@@ -1,5 +1,5 @@
 name: Publier sur OVH
-# Publication automatique du site depuis la branche main.
+# Publication automatique du site depuis la branche main, après configuration OVH.
 
 on:
   push:
