@@ -1,0 +1,37 @@
+name: Publier sur OVH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ovh-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ vars.OVH_TARGET_DIR != '' }}
+    steps:
+      - name: Récupérer le site
+        uses: actions/checkout@v4
+      - name: Installer le client SFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Publier les fichiers sur OVH via SFTP
+        env:
+          OVH_SFTP_PASSWORD: ${{ secrets.OVH_SFTP_PASSWORD }}
+          OVH_TARGET_DIR: ${{ vars.OVH_TARGET_DIR }}
+        run: |
+          set -euo pipefail
+          test -n "$OVH_SFTP_PASSWORD"
+          test -n "$OVH_TARGET_DIR"
+          case "$OVH_TARGET_DIR" in
+            /|.|..|/home/leclubl|/home/leclubl/) echo "Dossier de publication non autorisé"; exit 1;;
+          esac
+          lftp -u "leclubl,$OVH_SFTP_PASSWORD" sftp://ftp.cluster129.hosting.ovh.net:22 <<EOF
+          set sftp:auto-confirm yes
+          set net:max-retries 2
+          mirror --reverse --verbose --only-newer --exclude-glob .git/ --exclude-glob .github/ --exclude-glob README.md --exclude-glob '*.md' ./ "$OVH_TARGET_DIR"
+          bye
+          EOF
